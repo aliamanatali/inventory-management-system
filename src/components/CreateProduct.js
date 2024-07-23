@@ -1,4 +1,3 @@
-// components/CreateProduct.js
 import React, { useState } from 'react';
 
 const CreateProduct = ({ addProduct }) => {
@@ -8,39 +7,15 @@ const CreateProduct = ({ addProduct }) => {
     category: '',
     purchase_date: '',
     warranty_period: '',
-    condition: '',
-    quantity:1,
+    condition: 'Excellent', // default value
+    status: 'Available' // default value
   });
 
-  const categories = [
-    'Laptop',
-    'Mouse',
-    'Keyboard',
-    'External Hard Drive',
-    'USB Hub',
-    'Laptop Bag',
-    'Notebook',
-    'Pen',
-    'Highlighter',
-    'Stapler',
-    'Binder',
-    'Desk Organizer',
-    'Mouse Pad'
-  ];
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'quantity') {
-      setForm({
-        ...form,
-        [name]: Math.max(1, Number(value))
-      });
-    } else {
-      setForm({
-        ...form,
-        [name]: value
-      });
-    }
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = (e) => {
@@ -52,8 +27,8 @@ const CreateProduct = ({ addProduct }) => {
       category: '',
       purchase_date: '',
       warranty_period: '',
-      condition: '',
-      quantity:'',
+      condition: 'Excellent', // reset to default
+      status: 'Available' // reset to default
     });
   };
 
@@ -85,20 +60,14 @@ const CreateProduct = ({ addProduct }) => {
         </div>
         <div className="mb-4">
           <label className="block mb-2">Category</label>
-          <select
+          <input
+            type="text"
             name="category"
             value={form.category}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
-          >
-            <option value="" disabled>Select a category</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <div className="mb-4">
           <label className="block mb-2">Purchase Date</label>
@@ -124,25 +93,31 @@ const CreateProduct = ({ addProduct }) => {
         </div>
         <div className="mb-4">
           <label className="block mb-2">Condition</label>
-          <input
-            type="text"
+          <select
             name="condition"
             value={form.condition}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
-          />
+          >
+            <option value="Excellent">Excellent</option>
+            <option value="Good">Good</option>
+            <option value="Poor">Poor</option>
+          </select>
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Quantity</label>
-          <input
-            type="number"
-            name="quantity"
-            value={form.quantity}
+          <label className="block mb-2">Status</label>
+          <select
+            name="status"
+            value={form.status}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
-          />
+          >
+            <option value="Available">Available</option>
+            <option value="In use">In use</option>
+            <option value="In repair">In repair</option>
+          </select>
         </div>
         <button type="submit" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
           Add Product
