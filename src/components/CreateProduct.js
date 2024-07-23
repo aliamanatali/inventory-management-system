@@ -8,7 +8,8 @@ const CreateProduct = ({ addProduct }) => {
     category: '',
     purchase_date: '',
     warranty_period: '',
-    condition: ''
+    condition: '',
+    quantity:1,
   });
 
   const categories = [
@@ -28,10 +29,18 @@ const CreateProduct = ({ addProduct }) => {
   ];
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    if (name === 'quantity') {
+      setForm({
+        ...form,
+        [name]: Math.max(1, Number(value))
+      });
+    } else {
+      setForm({
+        ...form,
+        [name]: value
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -43,7 +52,8 @@ const CreateProduct = ({ addProduct }) => {
       category: '',
       purchase_date: '',
       warranty_period: '',
-      condition: ''
+      condition: '',
+      quantity:'',
     });
   };
 
@@ -118,6 +128,17 @@ const CreateProduct = ({ addProduct }) => {
             type="text"
             name="condition"
             value={form.condition}
+            onChange={handleChange}
+            className="border p-2 rounded w-full"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2">Quantity</label>
+          <input
+            type="number"
+            name="quantity"
+            value={form.quantity}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required

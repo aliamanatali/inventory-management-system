@@ -1,8 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare, faTrash, faListCheck } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-const Inventory = () => {
+const Inventory = (props) => {
+    const {role} = props;
   const objArray = [
     {
       name: "MacBook Pro",
@@ -148,6 +149,7 @@ const Inventory = () => {
       warranty_period: "N/A",
       condition: "New",
     },
+
     {
       name: "Swingline Stapler",
       qr_code: "103",
@@ -193,18 +195,22 @@ const Inventory = () => {
   return (
     <div className="container-fluid mx-auto p-4">
       <div className="flex justify-between mb-4">
-        <b className="text-2xl">Inventory List</b>
+        <b className="text-3xl text-green-600">Inventory List</b>
 
         <div>
-          <button className="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border">
-            Qty
-          </button>
-          <button className="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 ml-2 px-4 rounded border">
-            Add Product
-          </button>
+          <Link to="/prod-qty">
+            <button className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border">
+              Qty
+            </button>
+          </Link>
+          <Link to="/create-product">
+            <button className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 ml-2 px-4 rounded border">
+              Add Product
+            </button>
+          </Link>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-4 font-bold mb-2">
+      <div className="grid grid-cols-7 gap-4 font-bold mb-2 text-green-600">
         <div>Item Name</div>
         <div>Category</div>
         <div>Serial Number</div>
@@ -222,14 +228,19 @@ const Inventory = () => {
           <div>{item.warranty_period}</div>
           <div>{item.condition}</div>
           <div>
-            <Link to='/qty'>
-              <button>
-                <FontAwesomeIcon icon={faCheckSquare} />
-              </button>
-            </Link>
+            {role=='IT Person'? 
+            <button>
+                <FontAwesomeIcon className="mr-2" icon={faListCheck} />
+            </button>:
+            <span></span>
+        }
+            <button>
+              <FontAwesomeIcon icon={faCheckSquare} />
+            </button>
             <button className="ml-2">
               <FontAwesomeIcon icon={faTrash} />
             </button>
+            
           </div>
         </div>
       ))}
