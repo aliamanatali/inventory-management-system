@@ -2,7 +2,7 @@ import "./App.css";
 import SignIn from "./components/SignIn";
 import Quantity from "./components/ProdQuantity";
 import Inventory from "./components/Inventory";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import CreateProduct from "./components/CreateProduct";
 import Users from "./components/Users";
 import CreateUser from "./components/CreateUser";

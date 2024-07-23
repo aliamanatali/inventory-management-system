@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckSquare,
-  faTrash
+  faTrash,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import AssignModal from "./AssignModal";
 import { Link } from "react-router-dom";
@@ -231,12 +232,22 @@ const Inventory = (props) => {
 
         <div>
           {role === "IT Person" ? (
-            <button
-              onClick={() => handleAssign(true)}
-              className="bg-green-600 mr-2 hover:bg-blue-700 text-white font-bold py-2 ml-2 px-4 rounded border"
-            >
-              Assign
-            </button>
+            <span>
+              <Link to={'/'}>
+                <button
+                  onClick={() => handleAssign(true)}
+                  className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded border"
+                >
+                  <FontAwesomeIcon icon={faBell} />
+                </button>
+              </Link>
+              <button
+                onClick={() => handleAssign(true)}
+                className="bg-green-600 mr-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border"
+              >
+                Assign
+              </button>
+            </span>
           ) : (
             <span></span>
           )}

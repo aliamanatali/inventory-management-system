@@ -328,6 +328,7 @@ const objArray = [
             <input
               type="text"
               value={qrCode}
+              required
               onChange={handleQrCodeChange}
               placeholder="Enter Product's QR-Code"
               className="border p-2 rounded w-70"
@@ -336,6 +337,7 @@ const objArray = [
               type="text"
               value={productName}
               placeholder="Product Name"
+              required
               readOnly
               className="border p-2 ml-2 rounded w-70"
             />
@@ -349,6 +351,7 @@ const objArray = [
               onChange={handleUserIdChange}
               placeholder="Enter Employee ID"
               className="border p-2 rounded w-full"
+              required
             />
 
             <input
@@ -356,6 +359,7 @@ const objArray = [
               value={userName}
               placeholder="Employee Name"
               readOnly
+              required
               className="border p-2 ml-2 rounded w-full"
             />
             </div>
@@ -366,6 +370,7 @@ const objArray = [
             <input
               type="date"
               value={date}
+              required
               onChange={(e) => setDate(e.target.value)}
               className="border p-2 rounded w-1/3"
             />
