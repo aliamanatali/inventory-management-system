@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckSquare, faTrash, faListCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckSquare,
+  faTrash
+} from "@fortawesome/free-solid-svg-icons";
+import AssignModal from "./AssignModal";
 import { Link } from "react-router-dom";
+
 const Inventory = (props) => {
-    const {role} = props;
+  const { role } = props;
+  const [Modal, setModal] = useState(false);
+  const handleAssign = (flag) => {
+    setModal(flag);
+  };
   const objArray = [
     {
       name: "MacBook Pro",
@@ -12,6 +21,7 @@ const Inventory = (props) => {
       purchase_date: "2023-01-15",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Dell XPS 13",
@@ -20,6 +30,7 @@ const Inventory = (props) => {
       purchase_date: "2023-02-10",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Lenovo ThinkPad X1",
@@ -28,6 +39,7 @@ const Inventory = (props) => {
       purchase_date: "2023-03-05",
       warranty_period: "2 years",
       condition: "New",
+      status: "In use",
     },
     {
       name: "HP Spectre x360",
@@ -36,6 +48,7 @@ const Inventory = (props) => {
       purchase_date: "2023-04-20",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Acer Swift 3",
@@ -44,6 +57,7 @@ const Inventory = (props) => {
       purchase_date: "2023-05-15",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Asus ZenBook 14",
@@ -52,6 +66,7 @@ const Inventory = (props) => {
       purchase_date: "2023-06-01",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Microsoft Surface Laptop 4",
@@ -60,6 +75,7 @@ const Inventory = (props) => {
       purchase_date: "2023-07-22",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Razer Blade 15",
@@ -68,6 +84,7 @@ const Inventory = (props) => {
       purchase_date: "2023-08-18",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "MacBook Air",
@@ -76,6 +93,7 @@ const Inventory = (props) => {
       purchase_date: "2023-09-10",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "HP Envy x360",
@@ -84,6 +102,7 @@ const Inventory = (props) => {
       purchase_date: "2023-10-05",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Dell Mouse 1",
@@ -92,6 +111,7 @@ const Inventory = (props) => {
       purchase_date: "2022-11-20",
       warranty_period: "1 year",
       condition: "Used",
+      status: "In use",
     },
     {
       name: "Dell Keyboard 1",
@@ -100,6 +120,7 @@ const Inventory = (props) => {
       purchase_date: "2023-01-10",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Seagate External Hard Drive",
@@ -108,6 +129,7 @@ const Inventory = (props) => {
       purchase_date: "2023-02-25",
       warranty_period: "2 years",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Anker USB Hub",
@@ -116,6 +138,7 @@ const Inventory = (props) => {
       purchase_date: "2023-03-30",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Targus Laptop Bag",
@@ -124,6 +147,7 @@ const Inventory = (props) => {
       purchase_date: "2023-04-15",
       warranty_period: "1 year",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Moleskine Notebook",
@@ -132,6 +156,7 @@ const Inventory = (props) => {
       purchase_date: "2023-05-10",
       warranty_period: "N/A",
       condition: "New",
+      status: "In repair",
     },
     {
       name: "Pilot Pen",
@@ -140,6 +165,7 @@ const Inventory = (props) => {
       purchase_date: "2023-06-05",
       warranty_period: "N/A",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Stabilo Highlighter",
@@ -148,6 +174,7 @@ const Inventory = (props) => {
       purchase_date: "2023-07-12",
       warranty_period: "N/A",
       condition: "New",
+      status: "In use",
     },
 
     {
@@ -157,6 +184,7 @@ const Inventory = (props) => {
       purchase_date: "2023-08-23",
       warranty_period: "N/A",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Avery Binder",
@@ -165,6 +193,7 @@ const Inventory = (props) => {
       purchase_date: "2023-09-14",
       warranty_period: "N/A",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Generic Mouse",
@@ -173,6 +202,7 @@ const Inventory = (props) => {
       purchase_date: "2022-09-18",
       warranty_period: "1 year",
       condition: "Used",
+      status: "In use",
     },
     {
       name: "Ikea Desk Organizer",
@@ -181,6 +211,7 @@ const Inventory = (props) => {
       purchase_date: "2023-10-01",
       warranty_period: "N/A",
       condition: "New",
+      status: "In use",
     },
     {
       name: "Logitech Mouse Pad",
@@ -189,6 +220,7 @@ const Inventory = (props) => {
       purchase_date: "2023-10-20",
       warranty_period: "N/A",
       condition: "New",
+      status: "Availiable",
     },
   ];
 
@@ -198,6 +230,16 @@ const Inventory = (props) => {
         <b className="text-3xl text-green-600">Inventory List</b>
 
         <div>
+          {role === "IT Person" ? (
+            <button
+              onClick={() => handleAssign(true)}
+              className="bg-green-600 mr-2 hover:bg-blue-700 text-white font-bold py-2 ml-2 px-4 rounded border"
+            >
+              Assign
+            </button>
+          ) : (
+            <span></span>
+          )}
           <Link to="/prod-qty">
             <button className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border">
               Qty
@@ -210,40 +252,41 @@ const Inventory = (props) => {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-4 font-bold mb-2 text-green-600">
+      <div className="grid grid-cols-8 gap-4 font-bold mb-2 text-green-600">
         <div>Item Name</div>
         <div>Category</div>
         <div>Serial Number</div>
         <div>Purchase Date</div>
         <div>Warranty Period</div>
         <div>Condition</div>
+        <div>Status</div>
         <div>Operations</div>
       </div>
       {objArray.map((item, index) => (
-        <div key={index} className="grid grid-cols-7 gap-4 p-4 border mb-2">
+        <div key={index} className="grid grid-cols-8 gap-4 p-4 border mb-2">
           <div>{item.name}</div>
           <div>{item.category}</div>
           <div>{item.qr_code}</div>
           <div>{item.purchase_date}</div>
           <div>{item.warranty_period}</div>
           <div>{item.condition}</div>
+          <div>{item.status}</div>
           <div>
-            {role=='IT Person'? 
-            <button>
-                <FontAwesomeIcon className="mr-2" icon={faListCheck} />
-            </button>:
-            <span></span>
-        }
             <button>
               <FontAwesomeIcon icon={faCheckSquare} />
             </button>
             <button className="ml-2">
               <FontAwesomeIcon icon={faTrash} />
             </button>
-            
           </div>
         </div>
       ))}
+      {Modal && (
+        <AssignModal
+          product={Modal}
+          onClose={() => setModal(null)} // Close modal
+        />
+      )}
     </div>
   );
 };

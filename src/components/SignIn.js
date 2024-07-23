@@ -54,12 +54,12 @@ function SignIn() {
                       Password
                     </label>
                     <div class="text-sm">
-                      <a
-                        href="#"
+                      <p
+                        
                         class="font-semibold text-indigo-600 hover:text-indigo-500"
                       >
                         Forgot password?
-                      </a>
+                      </p>
                     </div>
                   </div>
                   <div class="mt-2">

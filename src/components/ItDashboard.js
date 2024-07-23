@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import Inventory from "./Inventory";
-import Users from "./Users";
 
 const ItDashboard = () => {
   const { id } = useParams();
-  const [showInventory, setShowInventory] = useState(true);
   const userArray = [
     {
       name: "Alice Johnson",
