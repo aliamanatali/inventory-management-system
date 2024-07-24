@@ -1,19 +1,21 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckSquare,
-  faTrash,
-  faBell,
-} from "@fortawesome/free-solid-svg-icons";
-import AssignModal from "./AssignModal";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-const Inventory = (props) => {
-  const { role } = props;
-  const [Modal, setModal] = useState(false);
-  const handleAssign = (flag) => {
-    setModal(flag);
-  };
+const UserRequests = ({ onClose, onAddTicket, userArray }) => {
+  const [category, setCategory] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
+  const [employeeName, setEmployeeName] = useState("");
+  const [reason, setReason] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // const pendingRequests = [
+  //   {
+  //     category:"Laptop",
+  //     employeeId:"1",
+  //     employeeName:"Alice Jhonson",
+  //     reason:"Chahie",
+  //     status:"Pending",
+  //   }
+  // ]
   const objArray = [
     {
       name: "MacBook Pro",
@@ -224,81 +226,110 @@ const Inventory = (props) => {
       status: "Availiable",
     },
   ];
+  const categories = [...new Set(objArray.map((item) => item.category))];
+
+  useEffect(() => {
+    const user = userArray.find((user) => user.id === employeeId);
+    if (user) {
+      setEmployeeName(user.name);
+    } else {
+      setEmployeeName("");
+    }
+  }, [employeeId, userArray]);
+
+  const status = "Pending";
+
+  const handleGenerate = () => {
+    if (!category || !employeeId || !employeeName || !reason) {
+      setErrorMessage("All fields are compulsory.");
+      return;
+    }
+
+    const ticket = {
+      category,
+      employeeId,
+      employeeName,
+      reason,
+      status,
+    };
+    onAddTicket(ticket);
+    setCategory("");
+    setEmployeeId("");
+    setEmployeeName("");
+    setReason("");
+    setErrorMessage("");
+  };
 
   return (
-    <div className="container-fluid mx-auto p-4">
-      <div className="flex justify-between mb-4">
-        <b className="text-3xl text-green-600">Inventory List</b>
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+      <div className="bg-slate-100 p-4 rounded">
+        <h2 className="text-xl font-bold mb-4">Request Product</h2>
+        <div className="mb-4">
+          <label className="block mb-2">Product Information:</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border p-2 rounded w-full"
+            required
+          >
+            <option value="">Select Product Category</option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
 
-        <div>
-          {role === "IT Person" ? (
-            <span>
-              <Link to={'/requests'}>
-                <button
-                  className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded border"
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </button>
-              </Link>
-              <button
-                onClick={() => handleAssign(true)}
-                className="bg-green-600 mr-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border"
-              >
-                Assign
-              </button>
-            </span>
-          ) : (
-            <span></span>
-          )}
-          <Link to="/prod-qty">
-            <button className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border">
-              Qty
-            </button>
-          </Link>
-          <Link to="/create-product">
-            <button className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 ml-2 px-4 rounded border">
-              Add Product
-            </button>
-          </Link>
-        </div>
-      </div>
-      <div className="grid grid-cols-8 gap-4 font-bold mb-2 text-green-600">
-        <div>Item Name</div>
-        <div>Category</div>
-        <div>Serial Number</div>
-        <div>Purchase Date</div>
-        <div>Warranty Period</div>
-        <div>Condition</div>
-        <div>Status</div>
-        <div>Operations</div>
-      </div>
-      {objArray.map((item, index) => (
-        <div key={index} className="grid grid-cols-8 gap-4 p-4 border mb-2">
-          <div>{item.name}</div>
-          <div>{item.category}</div>
-          <div>{item.qr_code}</div>
-          <div>{item.purchase_date}</div>
-          <div>{item.warranty_period}</div>
-          <div>{item.condition}</div>
-          <div>{item.status}</div>
-          <div>
-            <button>
-              <FontAwesomeIcon icon={faCheckSquare} />
-            </button>
-            <button className="ml-2">
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
+          <label className="block mt-4 mb-2">User Information:</label>
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="Enter Employee ID"
+              className="border p-2 rounded w-full"
+              value={employeeId}
+              onChange={(e) => setEmployeeId(e.target.value)}
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Employee Name"
+              value={employeeName}
+              readOnly
+              required
+              className="border p-2 ml-2 rounded w-full"
+            />
           </div>
+          <div>
+            <label className="block mt-4 mb-2">Reason:</label>
+            <input
+              type="text"
+              placeholder="Reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              required
+              className="border p-2 rounded w-full"
+            />
+          </div>
+          {errorMessage && (
+            <div className="text-red-500 mt-2">{errorMessage}</div>
+          )}
         </div>
-      ))}
-      {Modal && (
-        <AssignModal
-          product={Modal}
-          onClose={() => setModal(null)} 
-        />
-      )}
+        <button
+          onClick={handleGenerate}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+        >
+          Generate
+        </button>
+        <button
+          onClick={onClose}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Inventory;
+export default UserRequests;

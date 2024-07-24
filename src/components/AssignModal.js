@@ -1,17 +1,22 @@
+import React, { useState, useEffect } from "react";
+
+const AssignModal = ({ product, onClose }) => {
+  const [assignee, setAssignee] = useState("");
+  const [category, setCategory] = useState("");
+  const [qrCode, setQrCode] = useState("");
+  const [productName, setProductName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [date, setDate] = useState("");
+
+  // States for additional items
+  const [additionalItems, setAdditionalItems] = useState({
+    laptopBag: { checked: false, qrCode: "", name: "" },
+    charger: { checked: false, qrCode: "", name: "" },
+    mouse: { checked: false, qrCode: "", name: "" },
+  });
 
 
-  import React, { useState, useEffect } from "react";
-
-  const AssignModal = ({ product, onClose }) => {
-    const [assignee, setAssignee] = useState(""); // State to manage assignee
-    const [category, setCategory] = useState(""); // State to manage category
-    const [qrCode, setQrCode] = useState(""); // State to manage QR code
-    const [productName, setProductName] = useState(""); // State to display product name
-    const [userName, setUserName] = useState(""); // State to display user name
-    const [date, setDate] = useState(""); // State to manage date
-  
-    
-const objArray = [
+  const objArray = [
     {
       name: "MacBook Pro",
       qr_code: "123",
@@ -265,55 +270,101 @@ const objArray = [
       department: "Marketing",
     },
   ];
-  
-    // Set the current date as the default value in the date input field
-    useEffect(() => {
-      const currentDate = new Date().toISOString().split("T")[0];
-      setDate(currentDate);
-    }, []);
-  
-    // Fetch unique categories from objArray
-    const categories = [...new Set(objArray.map((item) => item.category))];
-  
-    const handleQrCodeChange = (e) => {
-      const qrCodeValue = e.target.value;
-      setQrCode(qrCodeValue);
-  
-      const matchedProduct = objArray.find((item) => item.qr_code === qrCodeValue);
-      if (matchedProduct) {
-        setProductName(matchedProduct.name);
-      } else {
-        setProductName("");
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    setDate(currentDate);
+  }, []);
+
+  const categories = [...new Set(objArray.map((item) => item.category))];
+
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    setCategory(selectedCategory);
+
+    if (selectedCategory === "Laptop") {
+      setAdditionalItems((prev) => ({
+        laptopBag: { ...prev.laptopBag, checked: false },
+        charger: { ...prev.charger, checked: false },
+        mouse: { ...prev.mouse, checked: false },
+      }));
+    }
+  };
+
+  const handleQrCodeChange = (e) => {
+    const qrCodeValue = e.target.value;
+    setQrCode(qrCodeValue);
+
+    const matchedProduct = objArray.find(
+      (item) => item.qr_code === qrCodeValue
+    );
+    if (matchedProduct) {
+      setProductName(matchedProduct.name);
+    } else {
+      setProductName("");
+    }
+  };
+
+  const handleUserIdChange = (e) => {
+    const userIdValue = e.target.value;
+    setAssignee(userIdValue);
+
+    const matchedUser = userArray.find((user) => user.id === userIdValue);
+    if (matchedUser) {
+      setUserName(matchedUser.name);
+    } else {
+      setUserName("");
+    }
+  };
+
+  const handleAssign = () => {
+    if (!qrCode || !assignee || !userName || !productName) {
+      alert("Please fill in all the fields.");
+    } else {
+      console.log(`Assigning ${productName} to ${assignee}`);
+      if (category === "Laptop") {
+        for (const [item, details] of Object.entries(additionalItems)) {
+          if (details.checked && details.qrCode) {
+            const matchedProduct = objArray.find(
+              (prod) => prod.qr_code === details.qrCode && prod.category === "Laptop " + item.charAt(0).toUpperCase() + item.slice(1)
+            );
+            if (matchedProduct) {
+              console.log(`${item} Name: ${matchedProduct.name}`);
+            }
+          }
+        }
       }
-    };
-  
-    const handleUserIdChange = (e) => {
-      const userIdValue = e.target.value;
-      setAssignee(userIdValue);
-  
-      const matchedUser = userArray.find((user) => user.id === userIdValue);
-      if (matchedUser) {
-        setUserName(matchedUser.name);
-      } else {
-        setUserName("");
-      }
-    };
-  
-    const handleAssign = () => {
-      // Implement the assignment logic here
-      console.log(`Assigning ${product.name} to ${assignee}`);
       onClose(); // Close the modal after assignment
-    };
-  
-    return (
+    }
+  };
+
+  const handleAdditionalItemChange = (item) => (e) => {
+    const { name, value } = e.target;
+    setAdditionalItems((prev) => ({
+      ...prev,
+      [item]: { ...prev[item], [name]: value },
+    }));
+
+    if (name === "qrCode") {
+      const matchedProduct = objArray.find(
+        (prod) => prod.qr_code === value && prod.category === item.charAt(0).toUpperCase() + item.slice(1) // Match category based on item
+      );
+      setAdditionalItems((prev) => ({
+        ...prev,
+        [item]: { ...prev[item], name: matchedProduct ? matchedProduct.name : "" },
+      }));
+    }
+  };
+
+  return (
+    <div>
       <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
         <div className="bg-white p-4 rounded">
           <h2 className="text-xl font-bold mb-4">Assign Product</h2>
           <div className="mb-4">
-          <label className="block mb-2">Product Information:</label>
+            <label className="block mb-2">Product Information:</label>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={handleCategoryChange}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Product Category</option>
@@ -323,49 +374,45 @@ const objArray = [
                 </option>
               ))}
             </select>
-  
-            <div className="flex justify-around mt-5">
-            <input
-              type="text"
-              value={qrCode}
-              required
-              onChange={handleQrCodeChange}
-              placeholder="Enter Product's QR-Code"
-              className="border p-2 rounded w-70"
-          />
-            <input
-              type="text"
-              value={productName}
-              placeholder="Product Name"
-              required
-              readOnly
-              className="border p-2 ml-2 rounded w-70"
-            />
-  
-            </div>
-            <label className="block mt-4 mb-2" >User Information:</label>
-            <div className="flex">
-            <input
-              type="text"
-              value={assignee}
-              onChange={handleUserIdChange}
-              placeholder="Enter Employee ID"
-              className="border p-2 rounded w-full"
-              required
-            />
 
-            <input
-              type="text"
-              value={userName}
-              placeholder="Employee Name"
-              readOnly
-              required
-              className="border p-2 ml-2 rounded w-full"
-            />
+            <div className="flex justify-around mt-5">
+              <input
+                type="number"
+                value={qrCode}
+                required
+                onChange={handleQrCodeChange}
+                placeholder="Enter Product's QR-Code"
+                className="border p-2 rounded w-70"
+              />
+              <input
+                type="text"
+                value={productName}
+                placeholder="Product Name"
+                required
+                readOnly
+                className="border p-2 ml-2 rounded w-70"
+              />
             </div>
-            {
-                
-            }
+            <label className="block mt-4 mb-2">User Information:</label>
+            <div className="flex">
+              <input
+                type="text"
+                value={assignee}
+                onChange={handleUserIdChange}
+                placeholder="Enter Employee ID"
+                className="border p-2 rounded w-full"
+                required
+              />
+
+              <input
+                type="text"
+                value={userName}
+                placeholder="Employee Name"
+                readOnly
+                required
+                className="border p-2 ml-2 rounded w-full"
+              />
+            </div>
             <label className="block mt-4 mb-2">Date:</label>
             <input
               type="date"
@@ -374,6 +421,126 @@ const objArray = [
               onChange={(e) => setDate(e.target.value)}
               className="border p-2 rounded w-1/3"
             />
+
+            {category === "Laptop" && (
+              <div className="mt-4">
+                <label className="block mb-2">Additional Items:</label>
+                <div className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    checked={additionalItems.laptopBag.checked}
+                    onChange={() =>
+                      setAdditionalItems((prev) => ({
+                        ...prev,
+                        laptopBag: {
+                          ...prev.laptopBag,
+                          checked: !prev.laptopBag.checked,
+                        },
+                      }))
+                    }
+                    id="laptopBag"
+                  />
+                  <label htmlFor="laptopBag" className="ml-2">
+                    Laptop Bag
+                  </label>
+                  </div>
+                  {additionalItems.laptopBag.checked && (
+                    <div className="flex">
+                      <input
+                        type="text"
+                        name="qrCode"
+                        value={additionalItems.laptopBag.qrCode}
+                        onChange={handleAdditionalItemChange("laptopBag")}
+                        placeholder="Enter Laptop Bag QR Code"
+                        className="border p-2 ml-4 rounded"
+                      />
+                      <input
+                        type="text"
+                        value={additionalItems.laptopBag.name}
+                        readOnly
+                        placeholder="Laptop Bag Name"
+                        className="border p-2 ml-2 rounded"
+                      />
+                    </div>
+                  )}
+                <div className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    checked={additionalItems.charger.checked}
+                    onChange={() =>
+                      setAdditionalItems((prev) => ({
+                        ...prev,
+                        charger: {
+                          ...prev.charger,
+                          checked: !prev.charger.checked,
+                        },
+                      }))
+                    }
+                    id="charger"
+                  />
+                  <label htmlFor="charger" className="ml-2">
+                    Charger
+                  </label>
+                  </div>
+                  {additionalItems.charger.checked && (
+                    <div className="flex">
+                      <input
+                        type="text"
+                        name="qrCode"
+                        value={additionalItems.charger.qrCode}
+                        onChange={handleAdditionalItemChange("charger")}
+                        placeholder="Enter Charger QR Code"
+                        className="border p-2 ml-4 rounded"
+                      />
+                      <input
+                        type="text"
+                        value={additionalItems.charger.name}
+                        readOnly
+                        placeholder="Charger Name"
+                        className="border p-2 ml-2 rounded"
+                      />
+                    </div>
+                  )}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={additionalItems.mouse.checked}
+                    onChange={() =>
+                      setAdditionalItems((prev) => ({
+                        ...prev,
+                        mouse: {
+                          ...prev.mouse,
+                          checked: !prev.mouse.checked,
+                        },
+                      }))
+                    }
+                    id="mouse"
+                  />
+                  <label htmlFor="mouse" className="ml-2">
+                    Mouse
+                  </label>
+                  </div>
+                  {additionalItems.mouse.checked && (
+                    <div className="flex">
+                      <input
+                        type="text"
+                        name="qrCode"
+                        value={additionalItems.mouse.qrCode}
+                        onChange={handleAdditionalItemChange("mouse")}
+                        placeholder="Enter Mouse QR Code"
+                        className="border p-2 ml-4 rounded"
+                      />
+                      <input
+                        type="text"
+                        value={additionalItems.mouse.name}
+                        readOnly
+                        placeholder="Mouse Name"
+                        className="border p-2 ml-2 rounded"
+                      />
+                    </div>
+                  )}
+              </div>
+            )}
           </div>
           <button
             onClick={handleAssign}
@@ -389,8 +556,8 @@ const objArray = [
           </button>
         </div>
       </div>
-    );
-  };
-  
-  export default AssignModal;
-  
+    </div>
+  );
+};
+
+export default AssignModal;

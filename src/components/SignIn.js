@@ -1,13 +1,73 @@
 import "../App.css";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 function SignIn() {
   const navigate = useNavigate();
-  const HandleSignIn = () =>
-  {
-    //authentication from backend --> After backend is done (postgreSql)
-    navigate('/user/1')
-    //will have to dynamically give the id hehe
-  }
+  const [email, setEmail] = useState("");  
+  const [password, setPassword] = useState("");
+  const userArray = [
+    {
+      name: "Alice Johnson",
+      role: "Admin",
+      email: "alice@example.com",
+      id: "1",
+      department: "IT",
+      password: "12345678"
+    },
+    {
+      name: "Bob Smith",
+      role: "IT Person",
+      email: "bob@example.com",
+      id: "2",
+      department: "IT",
+      password: "12345678"
+    },
+    {
+      name: "Carol White",
+      role: "Employee",
+      email: "carol@example.com",
+      id: "3",
+      department: "HR",
+      password: "12345678"
+    },
+    {
+      name: "Dave Brown",
+      role: "Admin",
+      email: "dave@example.com",
+      id: "4",
+      department: "Finance",
+      password: "12345678"
+    },
+    {
+      name: "Eve Davis",
+      role: "IT Person",
+      email: "eve@example.com",
+      id: "5",
+      department: "IT",
+      password: "12345678"
+    },
+    {
+      name: "Frank Miller",
+      role: "Employee",
+      email: "frank@example.com",
+      id: "6",
+      department: "Marketing",
+      password: "12345678"
+    },
+  ];
+  const HandleSignIn = (event) => {
+    event.preventDefault();
+    const user = userArray.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (user) {
+      console.log("User is logged in", user.email, email, user.password, password);
+      navigate(`/user/${user.id}`);
+    } else {
+      console.log("Invalid email or password");
+    }
+  };
   return (
     <div className="App">
       <div class="h-full bg-white">
@@ -29,6 +89,7 @@ function SignIn() {
                 <div>
                   <label
                     for="email"
+                   
                     class="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Email address
@@ -38,6 +99,7 @@ function SignIn() {
                       id="email"
                       name="email"
                       type="email"
+                      onChange={(e)=>setEmail(e.target.value)}
                       autocomplete="email"
                       required
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -67,6 +129,7 @@ function SignIn() {
                       id="password"
                       name="password"
                       type="password"
+                      onChange={(e)=>setPassword(e.target.value)}
                       autocomplete="current-password"
                       required
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

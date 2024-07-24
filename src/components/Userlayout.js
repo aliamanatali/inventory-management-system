@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import AdminDashboard from './AdminDashboard';
 import ItDashboard from './ItDashboard';
+import UserDashboard from './UserDashboard';
 
 const Userlayout = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const Userlayout = () => {
     <div className='container-fluid'>
       {user.role === 'Admin' && <AdminDashboard />}
       {user.role === 'IT Person' && <ItDashboard />}
-      {user.role === 'Employee' && <AdminDashboard />}
+      {user.role === 'Employee' && <UserDashboard />}
     </div>
   );
 };

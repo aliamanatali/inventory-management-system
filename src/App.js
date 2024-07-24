@@ -8,6 +8,8 @@ import Users from "./components/Users";
 import CreateUser from "./components/CreateUser";
 import UserQuantity from "./components/UserQuantity"
 import Userlayout from "./components/Userlayout";
+import Requests from "./components/HandleRequests";
+import UserRequests from "./components/UserRequests"
 function App() {
   return (
     <div className="App">
@@ -28,7 +30,8 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/user-qty" element={<UserQuantity />} />
-            
+            <Route path="/requests" element={<Requests/>}/>
+            <Route path="/req" element={<UserRequests/>}/>
           </Routes>
         </div>
       </Router>
