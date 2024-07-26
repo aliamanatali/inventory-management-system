@@ -3,29 +3,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import axios from "axios";
+
 const Users = () => {
   const [userArray, setUserArray] = useState([]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://localhost:3001/api/users");
-
         setUserArray(response.data);
-
         console.log("Fetched users:", response.data);
       } catch (err) {
         console.log("Error fetching users:", err.message);
       }
     };
-
     fetchUsers();
   }, []);
+
+  const handleDeleteUser = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/users/${id}`);
+      setUserArray(userArray.filter(user => user.id !== id)); // Remove the user from the state
+      console.log("User deleted successfully");
+    } catch (err) {
+      console.log("Error deleting user:", err.message);
+    }
+  };
 
   return (
     <div className="container-fluid mx-auto p-4">
       <div className="flex justify-between mb-4">
         <b className="text-3xl text-yellow-600">User List</b>
-
         <div>
           <Link to="/user-qty">
             <button className="bg-yellow-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border">
@@ -58,7 +66,7 @@ const Users = () => {
             <button>
               <FontAwesomeIcon icon={faCheckSquare} />
             </button>
-            <button className="ml-2">
+            <button className="ml-2" onClick={() => handleDeleteUser(item.id)}>
               <FontAwesomeIcon icon={faTrash} />
             </button>
           </div>
