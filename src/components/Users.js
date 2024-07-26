@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
 const Users = () => {
-  const objArray = [
-        { name: "Alice Johnson", role: "Admin", email: "alice@example.com", id: "1", department: "IT" },
-        { name: "Bob Smith", role: "IT Person", email: "bob@example.com", id: "2", department: "IT" },
-        { name: "Carol White", role: "Employee", email: "carol@example.com", id: "3", department: "HR" },
-        { name: "Dave Brown", role: "Admin", email: "dave@example.com", id: "4", department: "Finance" },
-        { name: "Eve Davis", role: "IT Person", email: "eve@example.com", id: "5", department: "IT" },
-        { name: "Frank Miller", role: "Employee", email: "frank@example.com", id: "6", department: "Marketing" }
-      ];
+  const [userArray, setUserArray] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/users");
+
+        setUserArray(response.data);
+
+        console.log("Fetched users:", response.data);
+      } catch (err) {
+        console.log("Error fetching users:", err.message);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div className="container-fluid mx-auto p-4">
@@ -38,7 +46,7 @@ const Users = () => {
         <div>Role</div>
         <div>Operations</div>
       </div>
-      {objArray.map((item, index) => (
+      {userArray.map((item, index) => (
         <div key={index} className="grid grid-cols-5 gap-4 p-4 border mb-2">
           <div>{item.name}</div>
           <div>{item.email}</div>

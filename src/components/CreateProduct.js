@@ -1,35 +1,48 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const CreateProduct = ({ addProduct }) => {
-  const [form, setForm] = useState({
+const CreateProduct = () => {
+  const [product, setProduct] = useState({
     name: '',
-    qr_code: '',
+    qrCode: 0,
     category: '',
-    purchase_date: '',
-    warranty_period: '',
+    purchaseDate: '',
+    warrantyDate: '',
     condition: 'Excellent', // default value
     status: 'Available' // default value
   });
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setProduct({
+      ...product,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addProduct(form);
-    setForm({
-      name: '',
-      qr_code: '',
-      category: '',
-      purchase_date: '',
-      warranty_period: '',
-      condition: 'Excellent', // reset to default
-      status: 'Available' // reset to default
-    });
+    const productWithNumberQR = {
+      ...product,
+      qrCode: Number(product.qrCode)  // Convert to number
+    };
+    console.log(productWithNumberQR);
+    try {
+      const response = await axios.post('http://localhost:3001/api/products', productWithNumberQR);
+      console.log('Product created:', response.data);
+      // Optionally clear the form or show a success message
+      setProduct({
+        name: '',
+        qrCode: 0,
+        category: '',
+        purchaseDate: '',
+        warrantyDate: '',
+        condition: 'Excellent',
+        status: 'Available'
+      });
+    } catch (error) {
+      console.error('Error creating product:', error);
+      // Optionally show an error message
+    }
   };
 
   return (
@@ -41,7 +54,7 @@ const CreateProduct = ({ addProduct }) => {
           <input
             type="text"
             name="name"
-            value={form.name}
+            value={product.name}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
@@ -50,9 +63,9 @@ const CreateProduct = ({ addProduct }) => {
         <div className="mb-4">
           <label className="block mb-2">QR Code</label>
           <input
-            type="text"
-            name="qr_code"
-            value={form.qr_code}
+            type="number"
+            name="qrCode"
+            value={product.qrCode}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
@@ -63,7 +76,7 @@ const CreateProduct = ({ addProduct }) => {
           <input
             type="text"
             name="category"
-            value={form.category}
+            value={product.category}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
@@ -73,19 +86,19 @@ const CreateProduct = ({ addProduct }) => {
           <label className="block mb-2">Purchase Date</label>
           <input
             type="date"
-            name="purchase_date"
-            value={form.purchase_date}
+            name="purchaseDate"
+            value={product.purchaseDate}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Warranty Period</label>
+          <label className="block mb-2">Warranty Date</label>
           <input
-            type="text"
-            name="warranty_period"
-            value={form.warranty_period}
+            type="date"
+            name="warrantyDate"
+            value={product.warrantyDate}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
@@ -95,7 +108,7 @@ const CreateProduct = ({ addProduct }) => {
           <label className="block mb-2">Condition</label>
           <select
             name="condition"
-            value={form.condition}
+            value={product.condition}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
@@ -109,7 +122,7 @@ const CreateProduct = ({ addProduct }) => {
           <label className="block mb-2">Status</label>
           <select
             name="status"
-            value={form.status}
+            value={product.status}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required

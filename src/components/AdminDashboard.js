@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import Inventory from "./Inventory";
 import Users from "./Users";
 
-
 const AdminPanel = () => {
   const { id } = useParams();
   const [showInventory, setShowInventory] = useState(true);
@@ -16,7 +15,7 @@ const AdminPanel = () => {
     if (storedUser) {
       setUser(storedUser);
     } else {
-      navigate('/login');
+      navigate('/signin'); 
     }
   }, [navigate]);
 

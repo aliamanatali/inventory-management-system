@@ -16,10 +16,6 @@ function App() {
       <Router>
         <div className="container mx-auto p-4">
           <nav className="flex justify-between mb-4">
-            {/* <Link to="/inventory" className="text-2xl font-bold">Inventory List</Link>
-            <Link to="/qty" className="text-2xl font-bold">Inventory Quantity</Link>
-            <Link to="/admin" className="text-2xl font-bold">Admin Panel</Link>
-            <Link to="/signin" className="text-2xl font-bold">Signin Page</Link> */}
           </nav>
           <Routes>
             <Route path="/signin" element={<SignIn />} />

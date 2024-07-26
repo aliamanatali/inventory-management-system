@@ -30,57 +30,6 @@ function SignIn() {
     fetchUsers();
   }, []);
 
-
-  // const userArray = [
-  //   {
-  //     name: "Alice Johnson",
-  //     role: "Admin",
-  //     email: "alice@example.com",
-  //     id: "1",
-  //     department: "IT",
-  //     password: "12345678"
-  //   },
-  //   {
-  //     name: "Bob Smith",
-  //     role: "IT Person",
-  //     email: "bob@example.com",
-  //     id: "2",
-  //     department: "IT",
-  //     password: "12345678"
-  //   },
-  //   {
-  //     name: "Carol White",
-  //     role: "Employee",
-  //     email: "carol@example.com",
-  //     id: "3",
-  //     department: "HR",
-  //     password: "12345678"
-  //   },
-  //   {
-  //     name: "Dave Brown",
-  //     role: "Admin",
-  //     email: "dave@example.com",
-  //     id: "4",
-  //     department: "Finance",
-  //     password: "12345678"
-  //   },
-  //   {
-  //     name: "Eve Davis",
-  //     role: "IT Person",
-  //     email: "eve@example.com",
-  //     id: "5",
-  //     department: "IT",
-  //     password: "12345678"
-  //   },
-  //   {
-  //     name: "Frank Miller",
-  //     role: "Employee",
-  //     email: "frank@example.com",
-  //     id: "6",
-  //     department: "Marketing",
-  //     password: "12345678"
-  //   },
-  // ];
   const HandleSignIn = (event) => {
     event.preventDefault();
     console.log(userArray);
