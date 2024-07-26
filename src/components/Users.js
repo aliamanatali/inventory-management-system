@@ -39,16 +39,18 @@ const Users = () => {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-5 gap-4 font-bold mb-2 text-yellow-600">
+      <div className="grid grid-cols-6 gap-4 font-bold mb-2 text-yellow-600">
         <div>Name</div>
+        <div>Employee Id</div>
         <div>Email</div>
         <div>Department</div>
         <div>Role</div>
         <div>Operations</div>
       </div>
       {userArray.map((item, index) => (
-        <div key={index} className="grid grid-cols-5 gap-4 p-4 border mb-2">
+        <div key={index} className="grid grid-cols-6 gap-4 p-4 border mb-2">
           <div>{item.name}</div>
+          <div>{item.id}</div>
           <div>{item.email}</div>
           <div>{item.department}</div>
           <div>{item.role}</div>
