@@ -16,7 +16,7 @@ const AdminPanel = () => {
     if (storedUser) {
       setUser(storedUser);
     } else {
-      navigate('/login'); // Redirect if no user data is found
+      navigate('/login');
     }
   }, [navigate]);
 
