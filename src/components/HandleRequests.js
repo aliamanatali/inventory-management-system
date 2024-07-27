@@ -1,96 +1,110 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import AssignModal from "./AssignModal";
+import axios from "axios";
 
 const Requests = () => {
-  const [Modal, setModal] = useState(false);
-
-  const getUserById = (id) => {
-    return userArray.find((user) => user.id === id);
-  };
-
-  const handleModal = (flag) => {
-    setModal(flag);
-  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tickets, setTickets] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
   const userArray = [
     {
       name: "Alice Johnson",
       role: "Admin",
       email: "alice@example.com",
-      id: "1",
+      id: 1,
       department: "IT",
     },
     {
       name: "Bob Smith",
       role: "IT Person",
       email: "bob@example.com",
-      id: "2",
+      id: 2,
       department: "IT",
     },
     {
       name: "Carol White",
       role: "Employee",
       email: "carol@example.com",
-      id: "3",
+      id: 3,
       department: "HR",
     },
     {
       name: "Dave Brown",
       role: "Admin",
       email: "dave@example.com",
-      id: "4",
+      id: 4,
       department: "Finance",
     },
     {
       name: "Eve Davis",
       role: "IT Person",
       email: "eve@example.com",
-      id: "5",
+      id: 5,
       department: "IT",
     },
     {
       name: "Frank Miller",
       role: "Employee",
       email: "frank@example.com",
-      id: "6",
+      id: 6,
       department: "Marketing",
     },
   ];
 
-  const req = [
-    {
-      req_id: "1",
-      category: "Laptop",
-      reason: "Mere ko mac do mjhy nai pta",
-      id: "1",
-    },
-    {
-      req_id: "2",
-      category: "Bag",
-      reason:
-        "Pichla bag chor le gae, new deden phr se nai ghumanga, Pakka :') ",
-      id: "2",
-    },
-    {
-      req_id: "3",
-      category: "Mouse",
-      reason: "I need a mouse my laptop's pointing pad isn't working",
-      id: "3",
-    },
-  ];
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/tickets");
+        setTickets(response.data);
+      } catch (error) {
+        console.error("Error fetching tickets:", error);
+      }
+    };
+
+    fetchTickets();
+  }, []);
+
+  const getUserById = (id) => {
+    return userArray.find((user) => user.id === id);
+  };
+
+  const handleModalToggle = (ticket = null) => {
+    setSelectedTicket(ticket);
+    setModalVisible(!modalVisible);
+  };
+
+  const handleAccept = async (ticket) => {
+    try {
+      const response = await axios.post("http://localhost:3001/api/tickets", ticket);
+      setTickets([...tickets, response.data]);
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error adding ticket:", error);
+    }
+  };
+
+  const handleReject = async (ticketId) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/tickets/${ticketId}`);
+      setTickets(tickets.filter((ticket) => ticket.id !== ticketId));
+    } catch (error) {
+      console.error("Error deleting ticket:", error);
+    }
+  };
 
   return (
     <div className="container-fluid flex flex-col items-center">
       <h3 className="mb-4 text-3xl">
         <strong>Requests</strong>
       </h3>
-      {req.length > 0 ? (
-        req.map((request) => {
-          const user = getUserById(request.id);
+      {tickets.length > 0 ? (
+        tickets.map((request) => {
+          const user = getUserById(request.userId);
           return (
             <div
-              key={request.req_id}
-              className="card mb-3 p-5  lg:w-1/3 md:w-2/3 sm:w-1/2 w-2/3 bg-slate-100 text-left"
+              key={request.id}
+              className="card mb-3 p-5 lg:w-1/3 md:w-2/3 sm:w-1/2 w-2/3 bg-slate-100 text-left"
             >
               <p className="card-text">
                 <strong>Requested Item:</strong> {request.category}
@@ -101,16 +115,19 @@ const Requests = () => {
                 {user.name} <strong>Role:</strong> {user.role}
               </p>
               <p className="card-text">
-                <strong>Reason:</strong> {request.reason}
+                <strong>Reason:</strong> {request.description}
               </p>
-              <div className=" flex justify-center">
+              <div className="flex justify-center">
                 <button
-                  onClick={()=>handleModal(true)}
-                  className=" bg-green-500 text-white mt-2 rounded px-3 py-1"
+                  onClick={() => handleModalToggle(request)}
+                  className="bg-green-500 text-white mt-2 rounded px-3 py-1"
                 >
                   Accept
                 </button>
-                <button className=" bg-red-700 text-white mt-2 ml-2 rounded px-4 py-2">
+                <button
+                  onClick={() => handleReject(request.id)}
+                  className="bg-red-700 text-white mt-2 ml-2 rounded px-4 py-2"
+                >
                   Reject
                 </button>
               </div>
@@ -120,7 +137,13 @@ const Requests = () => {
       ) : (
         <p>No requests available.</p>
       )}
-      {Modal && <AssignModal product={Modal} onClose={() => setModal(null)} />}
+      {modalVisible && (
+        <AssignModal
+          ticket={selectedTicket}
+          onClose={() => handleModalToggle(null)}
+          onAccept={handleAccept}
+        />
+      )}
     </div>
   );
 };

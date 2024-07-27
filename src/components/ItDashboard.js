@@ -1,70 +1,35 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import Inventory from "./Inventory";
 
 const ItDashboard = () => {
-  const { id } = useParams();
-  const userArray = [
-    {
-      name: "Alice Johnson",
-      role: "Admin",
-      email: "alice@example.com",
-      id: "1",
-      department: "IT",
-    },
-    {
-      name: "Bob Smith",
-      role: "IT Person",
-      email: "bob@example.com",
-      id: "2",
-      department: "IT",
-    },
-    {
-      name: "Carol White",
-      role: "Employee",
-      email: "carol@example.com",
-      id: "3",
-      department: "HR",
-    },
-    {
-      name: "Dave Brown",
-      role: "Admin",
-      email: "dave@example.com",
-      id: "4",
-      department: "Finance",
-    },
-    {
-      name: "Eve Davis",
-      role: "IT Person",
-      email: "eve@example.com",
-      id: "5",
-      department: "IT",
-    },
-    {
-      name: "Frank Miller",
-      role: "Employee",
-      email: "frank@example.com",
-      id: "6",
-      department: "Marketing",
-    },
-  ];
+  const [user, setUser] = useState(null); // Initialize as null
 
-  const user = userArray.find((user) => user.id === id);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+      setUser(storedUser);
+    console.log("Stored user:", storedUser);
+  }, []);
+
+  if (!user) { // Check if user is null
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container-fluid m-5 justify-around">
       <div className="flex justify-between">
-        <h1 className="text-5xl">IT Dashboard </h1>
+        <h1 className="text-5xl">IT Dashboard</h1>
         <div>
-          <p>Welcome back, <b>{user.name}</b></p>
-          <p className="">User ID: {id} </p>
+          <p>
+            Welcome back, <b>{user.name}</b>
+          </p>
+          <p>User ID: {user.id}</p>
         </div>
       </div>
 
       <hr />
 
       <div className="container-fluid">
-        <Inventory role={user.role}/>
+        <Inventory role={user.role} />
       </div>
     </div>
   );

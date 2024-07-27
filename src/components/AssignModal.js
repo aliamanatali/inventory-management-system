@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const AssignModal = ({ product, onClose }) => {
+const AssignModal = ({ onClose }) => {
   const [userId, setUserId] = useState("");
   const [category, setCategory] = useState("");
   const [qrCode, setQrCode] = useState("");
@@ -95,10 +95,7 @@ const AssignModal = ({ product, onClose }) => {
   };
 
   const findProductIdByQrCode = (qrCode) => {
-    // Find the product object with the given QR code
     const product = objArray.find(item => item.qrCode === parseInt(qrCode, 10));
-    
-    // If the product is found, return its ID
     return product ? product.id : null;
   };
 
@@ -107,58 +104,66 @@ const AssignModal = ({ product, onClose }) => {
       alert("Please fill in all the fields.");
       return;
     }
-  
+
     const productId = findProductIdByQrCode(qrCode);
-    
+
+    // Convert userId to number
+    const numericUserId = parseInt(userId, 10);
+
     // Insert primary product assignment
     const primaryPayload = {
       productId,
-      userId,
+      userId: numericUserId,
     };
-  
+
     try {
       await axios.post("http://localhost:3001/api/assign", primaryPayload);
       console.log("Primary product assigned:", primaryPayload);
-  
+
       // Insert additional items if category is "Laptop"
       if (category === "Laptop") {
-        for (const [details] of Object.entries(additionalItems)) {
-          if (details.checked && details.qrCode) {
-            const additionalProductId = findProductIdByQrCode(details.qrCode);
+        for (const itemKey in additionalItems) {
+          const item = additionalItems[itemKey];
+          if (item.checked && item.qrCode) {
+            const additionalProductId = findProductIdByQrCode(item.qrCode);
             if (additionalProductId) {
               const additionalPayload = {
                 productId: additionalProductId,
-                userId,
+                userId: numericUserId,
               };
-  
+              console.log("Additional payload:", additionalPayload);
               await axios.post("http://localhost:3001/api/assign", additionalPayload);
               console.log("Additional item assigned:", additionalPayload);
             }
           }
         }
       }
-  
+
       onClose(); // Close the modal after assignment
     } catch (err) {
       console.log("Error assigning:", err.message);
     }
   };
-    const handleAdditionalItemChange = (item) => (e) => {
-    const { name, value } = e.target;
-    setAdditionalItems((prev) => ({
-      ...prev,
-      [item]: { ...prev[item], [name]: value },
-    }));
 
-    if (name === "qrCode") {
-      const matchedProduct = objArray.find(
-        (prod) => prod.qrCode === parseInt(value, 10) && prod.category === "Laptop " + item.charAt(0).toUpperCase() + item.slice(1)
-      );
-      setAdditionalItems((prev) => ({
+  const handleAdditionalItemChange = (item) => (e) => {
+    const { name, value } = e.target;
+    const updatedValue = { [name]: value };
+  
+    setAdditionalItems((prev) => {
+      const updatedItem = { ...prev[item], ...updatedValue };
+      
+      if (name === "qrCode") {
+        const matchedProduct = objArray.find(
+          (prod) => prod.qrCode === parseInt(value, 10)
+        );
+        updatedItem.name = matchedProduct ? matchedProduct.name : "";
+      }
+  
+      return {
         ...prev,
-        [item]: { ...prev[item], name: matchedProduct ? matchedProduct.name : "" },
-      }));
-    }
+        [item]: updatedItem,
+      };
+    });
   };
 
   return (
