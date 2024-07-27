@@ -30,6 +30,15 @@ const Users = () => {
     }
   };
 
+  const handleEditUser = async (id) =>{
+    try{
+      await axios.put(`http://localhost:3001/api/users/${id}`);
+      
+    }catch{
+
+    }
+  }
+
   return (
     <div className="container-fluid mx-auto p-4">
       <div className="flex justify-between mb-4">
@@ -64,7 +73,7 @@ const Users = () => {
           <div>{item.role}</div>
           <div>
             <button>
-              <FontAwesomeIcon icon={faCheckSquare} />
+              <FontAwesomeIcon onClick={() => handleEditUser(item.id)} icon={faCheckSquare} />
             </button>
             <button className="ml-2" onClick={() => handleDeleteUser(item.id)}>
               <FontAwesomeIcon icon={faTrash} />
