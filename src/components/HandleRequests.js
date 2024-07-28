@@ -3,54 +3,24 @@ import AssignModal from "./AssignModal";
 import axios from "axios";
 
 const Requests = () => {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [userArray, setUserArray] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/users");
+        setUserArray(response.data);
+        console.log("Fetched users in Handle Requests:", response.data);
+      } catch (err) {
+        console.log("Error fetching users:", err.message);
+      }
+    };
 
-  const userArray = [
-    {
-      name: "Alice Johnson",
-      role: "Admin",
-      email: "alice@example.com",
-      id: 1,
-      department: "IT",
-    },
-    {
-      name: "Bob Smith",
-      role: "IT Person",
-      email: "bob@example.com",
-      id: 2,
-      department: "IT",
-    },
-    {
-      name: "Carol White",
-      role: "Employee",
-      email: "carol@example.com",
-      id: 3,
-      department: "HR",
-    },
-    {
-      name: "Dave Brown",
-      role: "Admin",
-      email: "dave@example.com",
-      id: 4,
-      department: "Finance",
-    },
-    {
-      name: "Eve Davis",
-      role: "IT Person",
-      email: "eve@example.com",
-      id: 5,
-      department: "IT",
-    },
-    {
-      name: "Frank Miller",
-      role: "Employee",
-      email: "frank@example.com",
-      id: 6,
-      department: "Marketing",
-    },
-  ];
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -79,6 +49,7 @@ const Requests = () => {
       const response = await axios.post("http://localhost:3001/api/tickets", ticket);
       setTickets([...tickets, response.data]);
       setModalVisible(false);
+      
     } catch (error) {
       console.error("Error adding ticket:", error);
     }

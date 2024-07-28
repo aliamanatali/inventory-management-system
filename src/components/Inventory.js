@@ -68,6 +68,11 @@ const Inventory = (props) => {
               Add Product
             </button>
           </Link>
+          <Link to="/signin">
+            <button className="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 ml-2 px-4 rounded border">
+              Logout
+            </button>
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-8 gap-4 font-bold mb-2 text-green-600">

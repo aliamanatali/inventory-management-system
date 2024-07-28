@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const CreateUser = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,21 +22,30 @@ const CreateUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Make a POST request to create a new user
       console.log(formData);
       const response = await axios.post("http://localhost:3001/api/users", formData);
       console.log("User Created:", response.data);
-      // Handle success (e.g., redirect or display a success message)
+      alert("User has been created successfully!");
+      navigate(`/`);
     } catch (error) {
       console.error("Error creating user:", error.response?.data || error.message);
-      // Handle error (e.g., display an error message)
+      alert("Error creating user. Please try again.");
     }
   };
 
   return (
     <div className="container mx-auto p-4">
+      <div className="flex">
+      <button
+        onClick={() => navigate(`/`)}
+        className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+      >
+        Back
+      </button>
+      </div>
+
       <h2 className="text-2xl font-bold mb-4">Create New User</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Name
@@ -45,6 +56,7 @@ const CreateUser = () => {
             value={formData.name}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="off"
           />
         </div>
         <div className="mb-4">
@@ -57,6 +69,7 @@ const CreateUser = () => {
             value={formData.email}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="new-email"
           />
         </div>
         <div className="mb-4">
@@ -68,6 +81,7 @@ const CreateUser = () => {
             value={formData.department}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="off"
           >
             {dept.map((department, index) => (
               <option key={index} value={department}>
@@ -85,6 +99,7 @@ const CreateUser = () => {
             value={formData.role}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="off"
           >
             <option value="Admin">Admin</option>
             <option value="IT Person">IT Person</option>
@@ -101,6 +116,7 @@ const CreateUser = () => {
             value={formData.password}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="new-password"
           />
         </div>
         <div>

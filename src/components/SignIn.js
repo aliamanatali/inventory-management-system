@@ -47,7 +47,7 @@ function SignIn() {
       localStorage.setItem('user', JSON.stringify(user));
       console.log(user)
       alert(`Welcome, ${user.name}! You have successfully signed in.`);
-      navigate(`/user/${user.id}`);
+      navigate(`/`);
     } else {
       console.log("Invalid email or password");
     }

@@ -84,7 +84,9 @@ const AssignModal = ({ onClose }) => {
     const userIdValue = e.target.value;
     setUserId(userIdValue);
 
-    const matchedUser = userArray.find((user) => user.id === parseInt(userIdValue, 10));
+    const matchedUser = userArray.find(
+      (user) => user.id === parseInt(userIdValue, 10)
+    );
     if (matchedUser) {
       setUserName(matchedUser.name);
       console.log("Matched user:", matchedUser);
@@ -95,7 +97,9 @@ const AssignModal = ({ onClose }) => {
   };
 
   const findProductIdByQrCode = (qrCode) => {
-    const product = objArray.find(item => item.qrCode === parseInt(qrCode, 10));
+    const product = objArray.find(
+      (item) => item.qrCode === parseInt(qrCode, 10)
+    );
     return product ? product.id : null;
   };
 
@@ -106,11 +110,7 @@ const AssignModal = ({ onClose }) => {
     }
 
     const productId = findProductIdByQrCode(qrCode);
-
-    // Convert userId to number
     const numericUserId = parseInt(userId, 10);
-
-    // Insert primary product assignment
     const primaryPayload = {
       productId,
       userId: numericUserId,
@@ -120,7 +120,6 @@ const AssignModal = ({ onClose }) => {
       await axios.post("http://localhost:3001/api/assign", primaryPayload);
       console.log("Primary product assigned:", primaryPayload);
 
-      // Insert additional items if category is "Laptop"
       if (category === "Laptop") {
         for (const itemKey in additionalItems) {
           const item = additionalItems[itemKey];
@@ -132,14 +131,17 @@ const AssignModal = ({ onClose }) => {
                 userId: numericUserId,
               };
               console.log("Additional payload:", additionalPayload);
-              await axios.post("http://localhost:3001/api/assign", additionalPayload);
+              await axios.post(
+                "http://localhost:3001/api/assign",
+                additionalPayload
+              );
               console.log("Additional item assigned:", additionalPayload);
             }
           }
         }
       }
-
-      onClose(); // Close the modal after assignment
+      
+      onClose();
     } catch (err) {
       console.log("Error assigning:", err.message);
     }
@@ -148,17 +150,17 @@ const AssignModal = ({ onClose }) => {
   const handleAdditionalItemChange = (item) => (e) => {
     const { name, value } = e.target;
     const updatedValue = { [name]: value };
-  
+
     setAdditionalItems((prev) => {
       const updatedItem = { ...prev[item], ...updatedValue };
-      
+
       if (name === "qrCode") {
         const matchedProduct = objArray.find(
           (prod) => prod.qrCode === parseInt(value, 10)
         );
         updatedItem.name = matchedProduct ? matchedProduct.name : "";
       }
-  
+
       return {
         ...prev,
         [item]: updatedItem,

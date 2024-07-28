@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Inventory from "./Inventory";
 import Users from "./Users";
 
 const AdminPanel = () => {
-  const { id } = useParams();
   const [showInventory, setShowInventory] = useState(true);
   const [user, setUser] = useState({});
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ const AdminPanel = () => {
         <h1 className="text-5xl">Admin Dashboard </h1>
         <div>
           <p>Welcome back, <b>{user.name}</b></p>
-        <p className="">User ID: {id} </p>
+        <p className="">User ID: {user.id} </p>
         </div>
         
       </div>

@@ -1,15 +1,34 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CreateProduct = () => {
+  const categories = [
+    "Laptop",
+    "Keyboard",
+    "External Hard Drive",
+    "USB Hub",
+    "Laptop Bag",
+    "Notebook",
+    "Pen",
+    "Highlighter",
+    "Binder",
+    "Mouse",
+    "Desk Organizer",
+    "Mouse Pad",
+    "Electronics"
+  ];
+
+  const navigate = useNavigate();
+
   const [product, setProduct] = useState({
     name: '',
     qrCode: 0,
-    category: '',
+    category: categories[0], 
     purchaseDate: '',
     warrantyDate: '',
-    condition: 'Excellent', // default value
-    status: 'Available' // default value
+    condition: 'Excellent', 
+    status: 'Available'
   });
 
   const handleChange = (e) => {
@@ -29,26 +48,34 @@ const CreateProduct = () => {
     try {
       const response = await axios.post('http://localhost:3001/api/products', productWithNumberQR);
       console.log('Product created:', response.data);
-      // Optionally clear the form or show a success message
       setProduct({
         name: '',
         qrCode: 0,
-        category: '',
+        category: categories[0],
         purchaseDate: '',
         warrantyDate: '',
         condition: 'Excellent',
         status: 'Available'
       });
+      navigate(`/`);
     } catch (error) {
       console.error('Error creating product:', error);
-      // Optionally show an error message
     }
   };
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
+      <div className="flex">
+      <button
+        onClick={() => navigate(`/`)}
+        className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+      >
+        Back
+      </button>
+      </div>
       <form onSubmit={handleSubmit}>
+        
         <div className="mb-4">
           <label className="block mb-2">Product Name</label>
           <input
@@ -73,14 +100,19 @@ const CreateProduct = () => {
         </div>
         <div className="mb-4">
           <label className="block mb-2">Category</label>
-          <input
-            type="text"
+          <select
             name="category"
             value={product.category}
             onChange={handleChange}
             className="border p-2 rounded w-full"
             required
-          />
+          >
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <label className="block mb-2">Purchase Date</label>
