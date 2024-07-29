@@ -10,7 +10,7 @@ const Inventory = (props) => {
   const { role } = props;
   const [Modal, setModal] = useState(false);
   const [objArray, setObjArray] = useState([]);
-  const [editProduct, setEditProduct] = useState(null);  // State for managing the product to be edited
+  const [editProduct, setEditProduct] = useState(null);
 
   const handleAssign = (flag) => {
     setModal(flag);
@@ -36,6 +36,7 @@ const Inventory = (props) => {
     try {
       await axios.delete(`http://localhost:3001/api/products/${id}`);
       setObjArray(objArray.filter((item) => item.id !== id));
+      console.log(objArray);
     } catch (err) {
       console.log("Error deleting product:", err.message);
     }
@@ -43,7 +44,7 @@ const Inventory = (props) => {
 
   const handleEditProduct = (product) => {
     console.log(product)
-    setEditProduct(product); // Set the product to be edited
+    setEditProduct(product);
   };
 
   const handleUpdateProduct = async (event) => {
@@ -65,7 +66,7 @@ const Inventory = (props) => {
         item.id === id ? response.data : item
       ));
   
-      setEditProduct(null); // Close the edit form
+      setEditProduct(null);
     } catch (err) {
       console.log("Error updating product:", err.message);
     }

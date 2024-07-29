@@ -15,7 +15,7 @@ const AssignModal = ({ onClose, ticketId }) => {
   });
   const [objArray, setObjArray] = useState([]);
   const [userArray, setUserArray] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -115,10 +115,8 @@ const AssignModal = ({ onClose, ticketId }) => {
       return;
     }
 
-    // Convert userId to number
     const numericUserId = parseInt(userId, 10);
 
-    // Insert primary product assignment
     const primaryPayload = {
       productId,
       userId: numericUserId,
@@ -128,7 +126,6 @@ const AssignModal = ({ onClose, ticketId }) => {
       await axios.post("http://localhost:3001/api/assign", primaryPayload);
       console.log("Primary product assigned:", primaryPayload);
 
-      // Insert additional items if category is "Laptop"
       if (category === "Laptop") {
         for (const itemKey in additionalItems) {
           const item = additionalItems[itemKey];
@@ -155,7 +152,7 @@ const AssignModal = ({ onClose, ticketId }) => {
         console.log("Ticket status updated to Completed");
       }
 
-      onClose(); // Close the modal after assignment
+      onClose();
     } catch (err) {
       setErrorMessage("Error assigning products. Please try again.");
       console.log("Error assigning:", err.message);

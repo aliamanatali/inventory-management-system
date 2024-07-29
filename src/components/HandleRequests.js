@@ -46,8 +46,6 @@ const Requests = () => {
 
   const handleAccept = async (ticket) => {
     try {
-      const response = await axios.post("http://localhost:3001/api/tickets", ticket);
-      setTickets([...tickets, response.data]);
       setModalVisible(false);
     } catch (error) {
       console.error("Error adding ticket:", error);

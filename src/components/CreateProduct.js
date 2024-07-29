@@ -34,7 +34,6 @@ const CreateProduct = () => {
   const [existingQrCodes, setExistingQrCodes] = useState([]);
   const [qrCodeError, setQrCodeError] = useState('');
 
-  // Fetch existing QR codes on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -57,7 +56,6 @@ const CreateProduct = () => {
     });
 
     if (name === 'qrCode') {
-      // Check if QR code is unique
       const isUnique = !existingQrCodes.includes(Number(value));
       setQrCodeError(isUnique ? '' : 'QR Code is already in use. Please use a different QR Code.');
     }
@@ -73,7 +71,7 @@ const CreateProduct = () => {
 
     const productWithNumberQR = {
       ...product,
-      qrCode: Number(product.qrCode)  // Convert to number
+      qrCode: Number(product.qrCode)
     };
 
     try {

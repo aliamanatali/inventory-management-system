@@ -33,6 +33,7 @@ const UserRequests = ({ onClose, onAddTicket }) => {
   let status = "Pending";
 
   const handleGenerate = async () => {
+    console.log("handleGenerate called");
     if (!category || !employeeId || !employeeName || !reason) {
       setErrorMessage("All fields are compulsory.");
       return;
@@ -45,10 +46,10 @@ const UserRequests = ({ onClose, onAddTicket }) => {
       status,
     };
 
-    console.log(ticket);
+    console.log("Generated ticket:", ticket);
     try {
       const response = await axios.post("http://localhost:3001/api/tickets", ticket);
-      onAddTicket(response.data);
+      onAddTicket(response.data); // Pass the created ticket to the parent component
       setCategory("");
       setEmployeeId("");
       setEmployeeName("");
@@ -115,12 +116,14 @@ const UserRequests = ({ onClose, onAddTicket }) => {
           )}
         </div>
         <button
+          type="button"
           onClick={handleGenerate}
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
         >
           Generate
         </button>
         <button
+          type="button"
           onClick={onClose}
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
         >

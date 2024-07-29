@@ -6,19 +6,14 @@ const Quantity = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
-    // Define an async function to fetch data
     const fetchProducts = async () => {
       try {
-        // Send a GET request to your endpoint
         const response = await axios.get("http://localhost:3001/api/products");
 
-        // Update state with the fetched data
         setObjArray(response.data);
 
-        // Log fetched products
         console.log("Fetched products:", response.data);
       } catch (err) {
-        // Handle any errors
         console.log("Error fetching products:", err.message);
       }
     };

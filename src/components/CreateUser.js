@@ -7,12 +7,12 @@ const CreateUser = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    department: "IT", // Set a default value for department
+    department: "IT",
     role: "Employee",
     password: ""
   });
   const [existingEmails, setExistingEmails] = useState([]);
-  const [emailError, setEmailError] = useState(""); // State for email error message
+  const [emailError, setEmailError] = useState(""); 
 
   const dept = ["IT", "HR", "Finance", "Marketing"];
 

@@ -8,13 +8,13 @@ const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [assignedProducts, setAssignedProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState({}); // State to store all products
+  const [allProducts, setAllProducts] = useState({});
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
-      fetchAssignedProducts(storedUser.id); // Fetch assigned products when user is set
+      fetchAssignedProducts(storedUser.id); 
     }
   }, []);
 
@@ -63,14 +63,9 @@ const UserDashboard = () => {
     setShowModal(!showModal);
   };
 
-  const handleAddTicket = async (ticket) => {
-    try {
-      const response = await axios.post("http://localhost:3001/api/tickets", ticket);
-      setTickets([...tickets, response.data]);
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error adding ticket:", error);
-    }
+  const handleAddTicket = (ticket) => {
+    setTickets([...tickets, ticket]);
+    setShowModal(false);
   };
 
   if (!user) {
@@ -107,7 +102,6 @@ const UserDashboard = () => {
         <UserRequests onClose={handleModalToggle} onAddTicket={handleAddTicket} />
       )}
 
-      {/* Display Assigned Products */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2">Assigned Products</h3>
         {assignedProducts.length > 0 ? (
@@ -126,7 +120,6 @@ const UserDashboard = () => {
         )}
       </div>
 
-      {/* Display Tickets */}
       <div>
         {tickets.map((ticket, index) => (
           <div

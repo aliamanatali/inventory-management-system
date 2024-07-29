@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Inventory from "./Inventory";
 
 const ItDashboard = () => {
-  const [user, setUser] = useState(null); // Initialize as null
+  const [user, setUser] = useState(null); 
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -10,7 +10,7 @@ const ItDashboard = () => {
     console.log("Stored user:", storedUser);
   }, []);
 
-  if (!user) { // Check if user is null
+  if (!user) {
     return <div>Loading...</div>;
   }
 

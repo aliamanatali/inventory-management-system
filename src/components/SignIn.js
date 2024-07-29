@@ -10,18 +10,14 @@ function SignIn() {
 
 
   useEffect(() => {
-    // Define an async function to fetch data
     const fetchUsers = async () => {
       try {
-        // Send a GET request to your endpoint
         const response = await axios.get("http://localhost:3001/api/users");
 
-        // Update state with the fetched data
         setUsers(response.data);
 
         console.log("Fetched users:", response.data);
       } catch (err) {
-        // Handle any errors
         console.log("Error fetching users:", err.message);
       }
     };
