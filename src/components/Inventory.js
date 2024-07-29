@@ -10,10 +10,13 @@ const Inventory = (props) => {
   const { role } = props;
   const [Modal, setModal] = useState(false);
   const [objArray, setObjArray] = useState([]);
-  
+  const [editProduct, setEditProduct] = useState(null);  // State for managing the product to be edited
+
   const handleAssign = (flag) => {
     setModal(flag);
   };
+
+  
 
   const fetchProducts = async () => {
     try {
@@ -36,6 +39,44 @@ const Inventory = (props) => {
     } catch (err) {
       console.log("Error deleting product:", err.message);
     }
+  };
+
+  const handleEditProduct = (product) => {
+    console.log(product)
+    setEditProduct(product); // Set the product to be edited
+  };
+
+  const handleUpdateProduct = async (event) => {
+    event.preventDefault();
+    const { id, name, qrCode, category, purchaseDate, warrantyDate, condition, status } = editProduct;
+  
+    try {
+      const response = await axios.put(`http://localhost:3001/api/products/${id}`, {
+        name,
+        qrCode,
+        category,
+        purchaseDate,
+        warrantyDate,
+        condition,
+        status
+      });
+  
+      setObjArray(objArray.map((item) =>
+        item.id === id ? response.data : item
+      ));
+  
+      setEditProduct(null); // Close the edit form
+    } catch (err) {
+      console.log("Error updating product:", err.message);
+    }
+  };
+  
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setEditProduct(prevProduct => ({
+      ...prevProduct,
+      [name]: value
+    }));
   };
 
   return (
@@ -95,7 +136,7 @@ const Inventory = (props) => {
           <div>{item.condition}</div>
           <div>{item.status}</div>
           <div>
-            <button>
+            <button onClick={() => handleEditProduct(item)}>
               <FontAwesomeIcon icon={faCheckSquare} />
             </button>
             <button onClick={() => handleDeleteProduct(item.id)} className="ml-2">
@@ -104,6 +145,99 @@ const Inventory = (props) => {
           </div>
         </div>
       ))}
+      {editProduct && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white p-4 rounded shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Edit Product</h2>
+            <form onSubmit={handleUpdateProduct}>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  name="name"
+                  value={editProduct.name || ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <label>
+                QR Code:
+                <input
+                  type="text"
+                  name="qrCode"
+                  value={editProduct.qrCode || ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <label>
+                Category:
+                <input
+                  type="text"
+                  name="category"
+                  value={editProduct.category || ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <label>
+                Purchase Date:
+                <input
+                  type="date"
+                  name="purchaseDate"
+                  value={editProduct.purchaseDate ? format(new Date(editProduct.purchaseDate), 'yyyy-MM-dd') : ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <label>
+                Warranty Date:
+                <input
+                  type="date"
+                  name="warrantyDate"
+                  value={editProduct.warrantyDate ? format(new Date(editProduct.warrantyDate), 'yyyy-MM-dd') : ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <label>
+                Condition:
+                <input
+                  type="text"
+                  name="condition"
+                  value={editProduct.condition || ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <label>
+                Status:
+                <input
+                  type="text"
+                  name="status"
+                  value={editProduct.status || ""}
+                  onChange={handleInputChange}
+                  className="border p-2 mb-2 w-full"
+                />
+              </label>
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditProduct(null)}
+                className="ml-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {Modal && (
         <AssignModal
           product={Modal}

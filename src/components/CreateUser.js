@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -11,18 +11,42 @@ const CreateUser = () => {
     role: "Employee",
     password: ""
   });
+  const [existingEmails, setExistingEmails] = useState([]);
+  const [emailError, setEmailError] = useState(""); // State for email error message
 
   const dept = ["IT", "HR", "Finance", "Marketing"];
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/users");
+        const emails = response.data.map(user => user.email.toLowerCase());
+        setExistingEmails(emails);
+      } catch (error) {
+        console.error("Error fetching users:", error.message);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (name === "email") {
+
+      setEmailError(existingEmails.includes(value.toLowerCase()) ? "Email already exists" : "");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (emailError) {
+      alert("Please fix the errors before submitting.");
+      return;
+    }
+
     try {
-      console.log(formData);
       const response = await axios.post("http://localhost:3001/api/users", formData);
       console.log("User Created:", response.data);
       alert("User has been created successfully!");
@@ -36,12 +60,12 @@ const CreateUser = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="flex">
-      <button
-        onClick={() => navigate(`/`)}
-        className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-      >
-        Back
-      </button>
+        <button
+          onClick={() => navigate(`/`)}
+          className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+        >
+          Back
+        </button>
       </div>
 
       <h2 className="text-2xl font-bold mb-4">Create New User</h2>
@@ -71,6 +95,9 @@ const CreateUser = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             autoComplete="new-email"
           />
+          {emailError && (
+            <p className="text-red-500 text-sm mt-2">{emailError}</p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -122,7 +149,7 @@ const CreateUser = () => {
         <div>
           <button
             type="submit"
-            className="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             Create User
           </button>

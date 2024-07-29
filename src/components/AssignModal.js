@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const AssignModal = ({ onClose }) => {
+const AssignModal = ({ onClose, ticketId }) => {
   const [userId, setUserId] = useState("");
   const [category, setCategory] = useState("");
   const [qrCode, setQrCode] = useState("");
@@ -15,6 +15,7 @@ const AssignModal = ({ onClose }) => {
   });
   const [objArray, setObjArray] = useState([]);
   const [userArray, setUserArray] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,6 +24,7 @@ const AssignModal = ({ onClose }) => {
         setObjArray(response.data);
         console.log("Fetched products:", response.data);
       } catch (err) {
+        setErrorMessage("Error fetching products. Please try again.");
         console.log("Error fetching products:", err.message);
       }
     };
@@ -37,6 +39,7 @@ const AssignModal = ({ onClose }) => {
         setUserArray(response.data);
         console.log("Fetched users:", response.data);
       } catch (err) {
+        setErrorMessage("Error fetching users. Please try again.");
         console.log("Error fetching users:", err.message);
       }
     };
@@ -84,9 +87,7 @@ const AssignModal = ({ onClose }) => {
     const userIdValue = e.target.value;
     setUserId(userIdValue);
 
-    const matchedUser = userArray.find(
-      (user) => user.id === parseInt(userIdValue, 10)
-    );
+    const matchedUser = userArray.find((user) => user.id === parseInt(userIdValue, 10));
     if (matchedUser) {
       setUserName(matchedUser.name);
       console.log("Matched user:", matchedUser);
@@ -97,20 +98,27 @@ const AssignModal = ({ onClose }) => {
   };
 
   const findProductIdByQrCode = (qrCode) => {
-    const product = objArray.find(
-      (item) => item.qrCode === parseInt(qrCode, 10)
-    );
+    const product = objArray.find(item => item.qrCode === parseInt(qrCode, 10));
     return product ? product.id : null;
   };
 
   const handleAssign = async () => {
     if (!qrCode || !userId || !userName || !productName) {
-      alert("Please fill in all the fields.");
+      setErrorMessage("Please fill in all the fields.");
       return;
     }
 
     const productId = findProductIdByQrCode(qrCode);
+
+    if (!productId) {
+      setErrorMessage("Product not found with the provided QR code.");
+      return;
+    }
+
+    // Convert userId to number
     const numericUserId = parseInt(userId, 10);
+
+    // Insert primary product assignment
     const primaryPayload = {
       productId,
       userId: numericUserId,
@@ -120,6 +128,7 @@ const AssignModal = ({ onClose }) => {
       await axios.post("http://localhost:3001/api/assign", primaryPayload);
       console.log("Primary product assigned:", primaryPayload);
 
+      // Insert additional items if category is "Laptop"
       if (category === "Laptop") {
         for (const itemKey in additionalItems) {
           const item = additionalItems[itemKey];
@@ -131,18 +140,24 @@ const AssignModal = ({ onClose }) => {
                 userId: numericUserId,
               };
               console.log("Additional payload:", additionalPayload);
-              await axios.post(
-                "http://localhost:3001/api/assign",
-                additionalPayload
-              );
+              await axios.post("http://localhost:3001/api/assign", additionalPayload);
               console.log("Additional item assigned:", additionalPayload);
+            } else {
+              setErrorMessage(`Additional item with QR code ${item.qrCode} not found.`);
+              return;
             }
           }
         }
       }
-      
-      onClose();
+
+      if (ticketId) {
+        await axios.put(`http://localhost:3001/api/tickets/${ticketId}`, { status: "Completed" });
+        console.log("Ticket status updated to Completed");
+      }
+
+      onClose(); // Close the modal after assignment
     } catch (err) {
+      setErrorMessage("Error assigning products. Please try again.");
       console.log("Error assigning:", err.message);
     }
   };
@@ -156,7 +171,8 @@ const AssignModal = ({ onClose }) => {
 
       if (name === "qrCode") {
         const matchedProduct = objArray.find(
-          (prod) => prod.qrCode === parseInt(value, 10)
+          (prod) => prod.qrCode === parseInt(value, 10) &&
+                    prod.category === "Laptop " + item.charAt(0).toUpperCase() + item.slice(1)
         );
         updatedItem.name = matchedProduct ? matchedProduct.name : "";
       }
@@ -172,6 +188,14 @@ const AssignModal = ({ onClose }) => {
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-4 rounded">
         <h2 className="text-xl font-bold mb-4">Assign Product</h2>
+        
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong className="font-bold">Error!</strong>
+            <span className="block sm:inline">{errorMessage}</span>
+          </div>
+        )}
+
         <div className="mb-4">
           <label className="block mb-2">Product Information:</label>
           <select

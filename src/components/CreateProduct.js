@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,23 +31,55 @@ const CreateProduct = () => {
     status: 'Available'
   });
 
+  const [existingQrCodes, setExistingQrCodes] = useState([]);
+  const [qrCodeError, setQrCodeError] = useState('');
+
+  // Fetch existing QR codes on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/products');
+        const qrCodes = response.data.map(product => product.qrCode);
+        setExistingQrCodes(qrCodes);
+      } catch (error) {
+        console.error('Error fetching products:', error.message);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setProduct({
       ...product,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+
+    if (name === 'qrCode') {
+      // Check if QR code is unique
+      const isUnique = !existingQrCodes.includes(Number(value));
+      setQrCodeError(isUnique ? '' : 'QR Code is already in use. Please use a different QR Code.');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (qrCodeError) {
+      alert("Please fix the errors before submitting.");
+      return;
+    }
+
     const productWithNumberQR = {
       ...product,
       qrCode: Number(product.qrCode)  // Convert to number
     };
-    console.log(productWithNumberQR);
+
     try {
       const response = await axios.post('http://localhost:3001/api/products', productWithNumberQR);
       console.log('Product created:', response.data);
+      alert('Product has been created successfully!');
       setProduct({
         name: '',
         qrCode: 0,
@@ -59,7 +91,8 @@ const CreateProduct = () => {
       });
       navigate(`/`);
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error('Error creating product:', error.response?.data || error.message);
+      alert('Error creating product. Please try again.');
     }
   };
 
@@ -67,14 +100,14 @@ const CreateProduct = () => {
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
       <div className="flex">
-      <button
-        onClick={() => navigate(`/`)}
-        className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-      >
-        Back
-      </button>
+        <button
+          onClick={() => navigate(`/`)}
+          className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+        >
+          Back
+        </button>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         
         <div className="mb-4">
           <label className="block mb-2">Product Name</label>
@@ -97,6 +130,7 @@ const CreateProduct = () => {
             className="border p-2 rounded w-full"
             required
           />
+          {qrCodeError && <p className="text-red-500">{qrCodeError}</p>}
         </div>
         <div className="mb-4">
           <label className="block mb-2">Category</label>
@@ -164,7 +198,10 @@ const CreateProduct = () => {
             <option value="In repair">In repair</option>
           </select>
         </div>
-        <button type="submit" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        <button
+          type="submit"
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
           Add Product
         </button>
       </form>

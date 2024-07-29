@@ -19,7 +19,6 @@ function SignIn() {
         // Update state with the fetched data
         setUsers(response.data);
 
-        // Log fetched users
         console.log("Fetched users:", response.data);
       } catch (err) {
         // Handle any errors

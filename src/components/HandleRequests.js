@@ -3,11 +3,11 @@ import AssignModal from "./AssignModal";
 import axios from "axios";
 
 const Requests = () => {
-
   const [modalVisible, setModalVisible] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [userArray, setUserArray] = useState([]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -49,7 +49,6 @@ const Requests = () => {
       const response = await axios.post("http://localhost:3001/api/tickets", ticket);
       setTickets([...tickets, response.data]);
       setModalVisible(false);
-      
     } catch (error) {
       console.error("Error adding ticket:", error);
     }
@@ -69,8 +68,8 @@ const Requests = () => {
       <h3 className="mb-4 text-3xl">
         <strong>Requests</strong>
       </h3>
-      {tickets.length > 0 ? (
-        tickets.map((request) => {
+      {tickets.filter(ticket => ticket.status === "Pending").length > 0 ? (
+        tickets.filter(ticket => ticket.status === "Pending").map((request) => {
           const user = getUserById(request.userId);
           return (
             <div
@@ -83,7 +82,11 @@ const Requests = () => {
               <hr />
               <p className="card-title mt-3">
                 <strong>Name: </strong>
-                {user.name} <strong>Role:</strong> {user.role}
+                {user.name}
+                <strong className="ml-2">User id: </strong>
+                {user.id} 
+                 
+                <strong className="ml-2">Role:</strong> {user.role}
               </p>
               <p className="card-text">
                 <strong>Reason:</strong> {request.description}
@@ -110,7 +113,7 @@ const Requests = () => {
       )}
       {modalVisible && (
         <AssignModal
-          ticket={selectedTicket}
+          ticketId={selectedTicket.id}
           onClose={() => handleModalToggle(null)}
           onAccept={handleAccept}
         />
